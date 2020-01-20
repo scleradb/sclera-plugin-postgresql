@@ -1,0 +1,6 @@
+Sclera - PostgreSQL Connector
+Copyright 2012 - 2020 Sclera, Inc.
+ 
+This product uses the following third-party components:
+
+PostgreSQL JDBC Driver - BSD 2-clause "Simplified" License - http://jdbc.postgresql.org/about/license.html
