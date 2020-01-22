@@ -4,6 +4,8 @@ description := "Add-on that enables Sclera to work with your data stored in Post
 
 version := "4.0-SNAPSHOT"
 
+homepage := Some(url("https://github.com/scleradb/sclera-plugin-postgresql"))
+
 organization := "com.scleradb"
 
 organizationName := "Sclera, Inc."
