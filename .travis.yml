@@ -1,0 +1,23 @@
+language: scala
+
+scala:
+  - 2.13.1
+
+jdk:
+  - openjdk11
+
+branches:
+  only:
+    - master
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database scleratest with template = template0 encoding = UTF8 lc_collate = "C";' -U postgres
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+    - $HOME/.coursier
