@@ -46,7 +46,7 @@ class PostgreSQL(
     override val param: String =
         if( dbName contains "/" ) dbName else "localhost/" + dbName
 
-    override val sqlMapper: SqlMapper = new PostgreSQLMapper(Some(this))
+    override val sqlMapper: SqlMapper = new PostgreSQLMapper(this)
     override val url: String = "jdbc:postgresql://" + param
 
     override def driver: SqlDriver =

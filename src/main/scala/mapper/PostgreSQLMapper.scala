@@ -31,10 +31,7 @@ import com.scleradb.sql.statements._
 import com.scleradb.sql.mapper._
 import com.scleradb.sql.mapper.target._
 
-class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
-    private def annotTableName(name: String): String =
-        locOpt.map { loc => loc.annotTableName(name) } getOrElse name
-
+class PostgreSQLMapper(loc: Location) extends SqlMapper {
     override def queryString(
         query: SqlRelQueryStatement
     ): String = targetQueryString(SqlTranslator.translateQuery(query))
@@ -100,10 +97,10 @@ class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
     }
 
     private def fromString(from: TargetSqlFrom): String = from match {
-        case TargetSqlTableRef(name, Nil) => annotTableName(name)
+        case TargetSqlTableRef(name, Nil) => loc.annotTableName(name)
 
         case TargetSqlTableRef(name, cols) =>
-            annotTableName(name) +
+            loc.annotTableName(name) +
             "(" + cols.map(col => exprString(col)).mkString(", ") + ")"
 
         case TargetSqlValues(name, cols, rows) if( !rows.isEmpty ) =>
@@ -168,7 +165,7 @@ class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
 
             List(
                 "DROP " + tableTypeStr + " IF EXISTS " +
-                annotTableName(st.obj.name)
+                loc.annotTableName(st.obj.name)
             )
 
         case SqlCreateIndex(indexName, relationId, indexColRefs, pred) =>
@@ -206,14 +203,14 @@ class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
             val setExprs: List[ScalExpr] =
                 cvs.map { case (c, v) => ScalOpExpr(Equals, List(c, v)) }
             List(
-                "UPDATE " + annotTableName(tableId.name) +
+                "UPDATE " + loc.annotTableName(tableId.name) +
                 " SET " + setExprs.map(e => exprString(e)).mkString(", ") +
                 " WHERE " + exprString(pred)
             )
 
         case SqlDelete(tableId, pred) =>
             List(
-                "DELETE FROM " + annotTableName(tableId.name) +
+                "DELETE FROM " + loc.annotTableName(tableId.name) +
                 " WHERE " + exprString(pred)
             )
 
@@ -239,11 +236,11 @@ class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
     }
 
     def tableString(name: String, relExpr: RelExpr): String =
-        "TABLE " + annotTableName(name) +
+        "TABLE " + loc.annotTableName(name) +
         " AS " + queryString(SqlRelQueryStatement(relExpr))
 
     def viewString(name: String, relExpr: RelExpr): String =
-        "VIEW " + annotTableName(name) +
+        "VIEW " + loc.annotTableName(name) +
         " AS " + queryString(SqlRelQueryStatement(relExpr))
 
     def tableString(table: Table): String = {
@@ -266,34 +263,16 @@ class PostgreSQLMapper(locOpt: Option[Location]) extends SqlMapper {
                 ")"
         }
 
-        val refStrs: List[String] = locOpt match {
-            case Some(loc) => // for PostgreSQL
-                table.foreignKeys.filter { fk =>
-                    fk.refTableId(loc.schema).locationId == loc.id
-                } map { case ForeignKey(cols, _, refTableName, refCols) =>
-                    "FOREIGN KEY (" +
-                        cols.map(col => exprString(col)).mkString(", ") +
-                    ") REFERENCES " +
-                    fromString(TargetSqlTableRef(refTableName, refCols))
-                }
-
-            case None => // for Sclera user interface
-                table.foreignKeys.map {
-                    case ForeignKey(cols, refLocIdOpt, refTableName, refCols) =>
-                        val refTableIdStr: String = refLocIdOpt match {
-                            case Some(refLocId) =>
-                                TableId(refLocId, refTableName).repr
-                            case None => refTableName
-                        }
-
-                        "FOREIGN KEY (" +
-                            cols.map(col => exprString(col)).mkString(", ") +
-                        ") REFERENCES " +
-                        fromString(TargetSqlTableRef(refTableIdStr, refCols))
-                }
+        val refStrs: List[String] = table.foreignKeys.filter { fk =>
+            fk.refTableId(loc.schema).locationId == loc.id
+        } map { case ForeignKey(cols, _, refTableName, refCols) =>
+            "FOREIGN KEY (" +
+                cols.map(col => exprString(col)).mkString(", ") +
+            ") REFERENCES " +
+            fromString(TargetSqlTableRef(refTableName, refCols))
         }
 
-        "TABLE " + annotTableName(table.name) +
+        "TABLE " + loc.annotTableName(table.name) +
             "(" + (colStrs:::keyStrs:::refStrs).mkString(", ") + ")"
     }
 
