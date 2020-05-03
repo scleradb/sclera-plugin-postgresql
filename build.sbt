@@ -11,7 +11,7 @@ scmInfo := Some(
     )
 )
 
-version := "4.0-SNAPSHOT"
+version := "4.0"
 
 startYear := Some(2012)
 
@@ -23,11 +23,11 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 
 libraryDependencies ++= Seq(
     "org.postgresql" % "postgresql" % "42.2.8",
-    "com.scleradb" %% "sclera-core" % "4.0-SNAPSHOT" % "provided",
-    "com.scleradb" %% "sclera-config" % "4.0-SNAPSHOT" % "test",
-    "com.scleradb" %% "sclera-jdbc" % "4.0-SNAPSHOT" % "test",
-    "com.scleradb" %% "sclera-plugin-csv" % "4.0-SNAPSHOT" % "test",
-    "com.scleradb" %% "sclera-sqltests-runner" % "4.0-SNAPSHOT" % "test",
+    "com.scleradb" %% "sclera-core" % "4.0" % "provided",
+    "com.scleradb" %% "sclera-config" % "4.0" % "test",
+    "com.scleradb" %% "sclera-jdbc" % "4.0" % "test",
+    "com.scleradb" %% "sclera-plugin-csv" % "4.0" % "test",
+    "com.scleradb" %% "sclera-sqltests-runner" % "4.0" % "test",
     "org.scalatest" %% "scalatest" % "3.1.1" % "test"
 )
 
