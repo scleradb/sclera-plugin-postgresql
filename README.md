@@ -1,6 +1,8 @@
 # Sclera - PostgreSQL Connector
 
 [![Build Status](https://travis-ci.org/scleradb/sclera-plugin-postgresql.svg?branch=master)](https://travis-ci.org/scleradb/sclera-plugin-postgresql)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.scleradb/sclera-plugin-postgresql_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.scleradb/sclera-plugin-postgresql_2.13)
+[![scaladoc](https://javadoc.io/badge2/com.scleradb/sclera-plugin-postgresql_2.13/scaladoc.svg)](https://javadoc.io/doc/com.scleradb/sclera-plugin-postgresql_2.13)
 
 This component enables Sclera to work with your data stored in [PostgreSQL](http://www.postgresql.org).
 
